@@ -1,0 +1,26 @@
+# ESP-IDF 编译生成
+build/
+sdkconfig
+sdkconfig.old
+# 组件管理器下载的组件（重要！）
+managed_components/
+
+# 临时文件
+*.bin_timestamp
+*.log
+.ninja_log
+.ninja_deps
+CMakeCache.txt
+CMakeFiles/
+
+# 测试文件（如果不需要提交测试用例）
+test/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.pyc
+__pycache__/
+11.py
+aa.py
