@@ -19,6 +19,11 @@
 #include "nvs_flash.h"
 #include "lwip/sockets.h"
 #include "lwip/netdb.h"
+#include "esp_ota_ops.h"
+#include "esp_partition.h"
+#include "esp_http_server.h"
+
+#include <inttypes.h>
 
 #define MOUSE_BUTTON_LEFT   0x01
 #define MOUSE_BUTTON_RIGHT  0x02
@@ -234,6 +239,134 @@ static void parse_mouse_event(char *data)
     if (tud_mounted()) {
         send_mouse(x, y, buttons, wheel);
     }
+}
+
+/********* OTA 分区切换 ***************/
+
+void print_running_partition(void)
+{
+    const esp_partition_t *running = esp_ota_get_running_partition();
+    ESP_LOGI(TAG, "Running partition: %s at offset 0x%08" PRIx32, 
+             running->label, running->address);
+}
+
+esp_err_t switch_to_partition(const char* partition_label)
+{
+    const esp_partition_t* partition = esp_partition_find_first(
+        ESP_PARTITION_TYPE_APP, 
+        ESP_PARTITION_SUBTYPE_ANY, 
+        partition_label);
+    
+    if (partition == NULL) {
+        ESP_LOGE(TAG, "Partition %s not found", partition_label);
+        return ESP_FAIL;
+    }
+    
+    esp_err_t err = esp_ota_set_boot_partition(partition);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to set boot partition");
+        return err;
+    }
+    
+    ESP_LOGI(TAG, "Will boot from %s next, restarting...", partition_label);
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    esp_restart();
+    return ESP_OK;
+}
+
+/********* HTTP 请求处理 ***************/
+
+static esp_err_t root_get_handler(httpd_req_t *req)
+{
+    const char* html_page = 
+        "<!DOCTYPE html>"
+        "<html>"
+        "<head>"
+        "    <title>ESP32 HID Control Panel</title>"
+        "    <meta charset='utf-8'>"
+        "    <meta name='viewport' content='width=device-width, initial-scale=1'>"
+        "    <style>"
+        "        body { font-family: Arial, sans-serif; text-align: center; margin-top: 30px; background: #1a1a2e; color: #eee; }"
+        "        h1 { color: #00d4ff; }"
+        "        .section { background: #16213e; border-radius: 10px; padding: 20px; margin: 20px auto; max-width: 500px; }"
+        "        .section h2 { color: #00d4ff; margin-top: 0; }"
+        "        button { font-size: 16px; padding: 10px 20px; margin: 8px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s; }"
+        "        button:hover { transform: scale(1.02); opacity: 0.9; }"
+        "        .btn-switch { background: #f39c12; color: #1a1a2e; }"
+        "        .status { margin-top: 10px; padding: 10px; background: #0f3460; border-radius: 8px; font-size: 14px; }"
+        "    </style>"
+        "    <script>"
+        "        function updateStatus() {"
+        "            fetch('/partition_status')"
+        "            .then(response => response.json())"
+        "            .then(data => {"
+        "                document.getElementById('runningPartition').innerHTML = data.running_partition;"
+        "            });"
+        "        }"
+        "        function switchPartition(partition) {"
+        "            if(confirm('切换到 ' + partition + ' 分区并重启？')) {"
+        "                fetch('/switch?partition=' + partition, { method: 'POST' })"
+        "                .then(response => response.text())"
+        "                .then(data => alert(data));"
+        "            }"
+        "        }"
+        "        setInterval(updateStatus, 2000);"
+        "        window.onload = updateStatus;"
+        "    </script>"
+        "</head>"
+        "<body>"
+        "    <h1>✨ ESP32-S3 HID 控制台 ✨</h1>"
+        "    <div class='section'>"
+        "        <h2>🔄 功能切换 (OTA分区)</h2>"
+        "        <div class='feature'>"
+        "            <strong>当前运行分区: <span id='runningPartition'>---</span></strong>"
+        "        </div>"
+        "        <button class='btn-switch' onclick='switchPartition(\"ota_0\")'>🚀 切换到 ota_0</button>"
+        "        <button class='btn-switch' onclick='switchPartition(\"ota_1\")'>🚀 切换到 ota_1</button>"
+        "        <div class='status'>"
+        "            <strong>📌 说明</strong><br>"
+        "            ota_0: 模型推理功能<br>"
+        "            ota_1: 音频播放功能<br>"
+        "            <small>※ 切换后会重启设备</small>"
+        "        </div>"
+        "    </div>"
+        "</body>"
+        "</html>";
+    
+    httpd_resp_set_type(req, "text/html");
+    httpd_resp_send(req, html_page, strlen(html_page));
+    return ESP_OK;
+}
+
+// 分区状态查询接口
+static esp_err_t partition_status_get_handler(httpd_req_t *req)
+{
+    const esp_partition_t *running = esp_ota_get_running_partition();
+    char response[128];
+    sprintf(response, "{\"running_partition\": \"%s\"}", running->label);
+    httpd_resp_set_type(req, "application/json");
+    httpd_resp_send(req, response, strlen(response));
+    return ESP_OK;
+}
+
+// 分区切换接口
+static esp_err_t switch_post_handler(httpd_req_t *req)
+{
+    char query[64];
+    char partition[32] = {0};
+    
+    if (httpd_req_get_url_query_str(req, query, sizeof(query)) == ESP_OK) {
+        httpd_query_key_value(query, "partition", partition, sizeof(partition));
+    }
+    
+    if (strlen(partition) > 0) {
+        ESP_LOGI(TAG, "Switching to partition: %s", partition);
+        switch_to_partition(partition);
+        httpd_resp_send(req, "Switching partition...", 22);
+    } else {
+        httpd_resp_send(req, "Missing partition parameter", 27);
+    }
+    return ESP_OK;
 }
 
 /********* TCP服务器任务 ***************/
@@ -465,6 +598,31 @@ void app_main(void)
     
     ESP_ERROR_CHECK(tinyusb_driver_install(&tusb_cfg));
     ESP_LOGI(TAG, "USB initialized");
+    
+    // 打印当前分区
+    print_running_partition();
+    
+    // 启动 HTTP 服务器
+    httpd_handle_t server = NULL;
+    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
+    config.max_uri_handlers = 20;
+    config.lru_purge_enable = true;
+    
+    if (httpd_start(&server, &config) == ESP_OK) {
+        httpd_uri_t root_uri = { .uri = "/", .method = HTTP_GET, .handler = root_get_handler, .user_ctx = NULL };
+        httpd_register_uri_handler(server, &root_uri);
+        
+        httpd_uri_t partition_status_uri = { .uri = "/partition_status", .method = HTTP_GET, .handler = partition_status_get_handler, .user_ctx = NULL };
+        httpd_register_uri_handler(server, &partition_status_uri);
+        
+        httpd_uri_t switch_uri = { .uri = "/switch", .method = HTTP_POST, .handler = switch_post_handler, .user_ctx = NULL };
+        httpd_register_uri_handler(server, &switch_uri);
+        
+        ESP_LOGI(TAG, "HTTP server started on 192.168.4.1");
+        ESP_LOGI(TAG, "Open http://192.168.4.1 to control");
+    } else {
+        ESP_LOGE(TAG, "Failed to start HTTP server");
+    }
     
     xTaskCreate(tcp_server_task, "tcp_server", 4096, NULL, 5, NULL);
     xTaskCreate(usb_monitor_task, "usb_monitor", 2048, NULL, 3, NULL);

@@ -11,6 +11,8 @@ idf_component_register(
         esp_netif
         esp_event
         lwip
+        app_update
+        esp_http_server
     PRIV_REQUIRES 
         esp_driver_gpio
 )
