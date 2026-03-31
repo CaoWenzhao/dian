@@ -1,0 +1,492 @@
+{
+    "configs": {
+        "sequential/dense/MatMul": {
+            "PPQ_Variable_0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 1225273986,
+                "dominator": 1225273986
+            },
+            "sequential/dense/MatMul/ReadVariableOp:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 3925774141,
+                "dominator": 3925774141
+            },
+            "sequential/dense/MatMul:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 2381194508,
+                "dominator": 2381194508
+            }
+        },
+        "sequential/dense/BiasAdd": {
+            "sequential/dense/MatMul:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 123166623,
+                "dominator": 123166623
+            },
+            "sequential/dense/BiasAdd/ReadVariableOp:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 1046723558,
+                "dominator": 1046723558
+            },
+            "sequential/dense/BiasAdd:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "OVERLAPPED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 4137059089,
+                "dominator": 745345555
+            }
+        },
+        "sequential/dense/Relu": {
+            "sequential/dense/BiasAdd:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "OVERLAPPED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 2691078544,
+                "dominator": 745345555
+            },
+            "sequential/dense/Relu:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 745345555,
+                "dominator": 745345555
+            }
+        },
+        "sequential/dense_1/MatMul": {
+            "sequential/dense/Relu:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "OVERLAPPED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 2850387082,
+                "dominator": 745345555
+            },
+            "sequential/dense_1/MatMul/ReadVariableOp:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 1393092901,
+                "dominator": 1393092901
+            },
+            "sequential/dense_1/MatMul:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 543733588,
+                "dominator": 543733588
+            }
+        },
+        "sequential/dense_1/BiasAdd": {
+            "sequential/dense_1/MatMul:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 2509949127,
+                "dominator": 2509949127
+            },
+            "sequential/dense_1/BiasAdd/ReadVariableOp:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 3070238830,
+                "dominator": 3070238830
+            },
+            "sequential/dense_1/BiasAdd:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "OVERLAPPED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 1158509945,
+                "dominator": 2272647099
+            }
+        },
+        "sequential/dense_1/Relu": {
+            "sequential/dense_1/BiasAdd:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "OVERLAPPED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 614294104,
+                "dominator": 2272647099
+            },
+            "sequential/dense_1/Relu:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 2272647099,
+                "dominator": 2272647099
+            }
+        },
+        "sequential/dense_2/MatMul": {
+            "sequential/dense_1/Relu:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "OVERLAPPED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 1044628370,
+                "dominator": 2272647099
+            },
+            "sequential/dense_2/MatMul/ReadVariableOp:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 2416188429,
+                "dominator": 2416188429
+            },
+            "sequential/dense_2/MatMul:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 3149184668,
+                "dominator": 3149184668
+            }
+        },
+        "sequential/dense_2/BiasAdd": {
+            "sequential/dense_2/MatMul:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 192795375,
+                "dominator": 192795375
+            },
+            "sequential/dense_2/BiasAdd/ReadVariableOp:0": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "PASSIVE",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 3263275510,
+                "dominator": 3263275510
+            },
+            "output": {
+                "bit_width": 8,
+                "policy": {
+                    "PER_TENSOR": true,
+                    "PER_CHANNEL": false,
+                    "LINEAR": true,
+                    "FLOATING": false,
+                    "SYMMETRICAL": true,
+                    "ASYMMETRICAL": false,
+                    "POWER_OF_2": true,
+                    "DYNAMIC": false
+                },
+                "state": "ACTIVATED",
+                "quant_min": -128,
+                "quant_max": 127,
+                "hash": 227086561,
+                "dominator": 227086561
+            }
+        }
+    },
+    "dispatchings": {
+        "sequential/dense/MatMul": "ESPDL_S3_INT8",
+        "sequential/dense/BiasAdd": "ESPDL_S3_INT8",
+        "sequential/dense/Relu": "ESPDL_S3_INT8",
+        "sequential/dense_1/MatMul": "ESPDL_S3_INT8",
+        "sequential/dense_1/BiasAdd": "ESPDL_S3_INT8",
+        "sequential/dense_1/Relu": "ESPDL_S3_INT8",
+        "sequential/dense_2/MatMul": "ESPDL_S3_INT8",
+        "sequential/dense_2/BiasAdd": "ESPDL_S3_INT8"
+    },
+    "values": {
+        "1225273986": {
+            "scale": 0.015625,
+            "zero_point": 0.0
+        },
+        "3925774141": {
+            "scale": 0.0078125,
+            "zero_point": 0.0
+        },
+        "2381194508": {
+            "scale": 0.25,
+            "zero_point": 0.0
+        },
+        "123166623": {
+            "scale": 0.25,
+            "zero_point": 0.0
+        },
+        "1046723558": {
+            "scale": 0.25,
+            "zero_point": 0.0
+        },
+        "745345555": {
+            "scale": 0.25,
+            "zero_point": 0.0
+        },
+        "1393092901": {
+            "scale": 0.0078125,
+            "zero_point": 0.0
+        },
+        "543733588": {
+            "scale": 0.5,
+            "zero_point": 0.0
+        },
+        "2509949127": {
+            "scale": 0.5,
+            "zero_point": 0.0
+        },
+        "3070238830": {
+            "scale": 0.5,
+            "zero_point": 0.0
+        },
+        "2272647099": {
+            "scale": 0.5,
+            "zero_point": 0.0
+        },
+        "2416188429": {
+            "scale": 0.0078125,
+            "zero_point": 0.0
+        },
+        "3149184668": {
+            "scale": 1.0,
+            "zero_point": 0.0
+        },
+        "192795375": {
+            "scale": 1.0,
+            "zero_point": 0.0
+        },
+        "3263275510": {
+            "scale": 1.0,
+            "zero_point": 0.0
+        },
+        "227086561": {
+            "scale": 1.0,
+            "zero_point": 0.0
+        }
+    }
+}
